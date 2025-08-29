@@ -1,5 +1,9 @@
 <template>
-  <form @submit.prevent="submitForm" class="p-4 max-w-md mx-auto">
+  <form
+    v-if="project && project.name !== undefined"
+    @submit.prevent="submitForm"
+    class="p-4 max-w-md mx-auto"
+  >
     <div>
       <label for="name" class="font-semibold">Projekt neve*</label>
       <input
@@ -49,31 +53,35 @@
     </button>
     <button
       type="button"
-      @click="$emit('cancel')"
+      @click="router.push('/projects')"
       class="ml-2 px-4 py-2 rounded border"
     >
       Mégse
     </button>
   </form>
 </template>
-
 <script setup>
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useProjectStorage } from "../composables/useProject";
 
-const props = defineProps({
-  project: Object,
-});
+const route = useRoute();
+const router = useRouter();
+const projectStore = useProjectStorage();
 
-const defaultProject = {
-  name: "",
-  description: "",
-  startDate: "",
-  budget: 0,
+const submitForm = () => {
+  if (validate(project)) {
+    if (project.id) {
+      projectStore.updateProject(project);
+    } else {
+      projectStore.addProject(project);
+    }
+    router.push("/projects");
+    setTimeout(() => {
+      alert("Projekt sikeresen hozzáadva!");
+    }, 200);
+  }
 };
-
-const project = reactive({ ...defaultProject, ...(props.project || {}) });
-
-const emit = defineEmits(["save", "cancel"]);
 
 const errors = reactive({
   name: "",
@@ -87,9 +95,42 @@ const validate = () => {
   return !errors.name && !errors.budget;
 };
 
-const submitForm = () => {
-  if (validate()) {
-    emit("save", { ...project });
+const id = route.params.id;
+
+const project = reactive({
+  name: "",
+  description: "",
+  startDate: "",
+  budget: 0,
+});
+
+if (id) {
+  const existingProject = projectStore.projects.value.find(
+    (p) => p.id === Number(id)
+  );
+  if (existingProject) {
+    Object.assign(project, existingProject);
   }
-};
+}
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) {
+      const existingProject = projectStore.projects.value.find(
+        (p) => p.id === Number(newId)
+      );
+      if (existingProject) {
+        Object.assign(project, existingProject);
+      }
+    } else {
+      Object.assign(project, {
+        name: "",
+        description: "",
+        startDate: "",
+        budget: 0,
+      });
+    }
+  }
+);
 </script>
