@@ -1,30 +1,72 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <Navbar @navigate="view = $event" />
+    <main class="p-6">
+      <ProjectList
+        v-if="view === 'list'"
+        :projects="projects"
+        @edit="startEdit"
+        @delete="deleteProject"
+      />
+      <ProjectForm
+        v-else
+        :project="editedProject"
+        @save="saveProject"
+        @cancel="cancelEdit"
+      />
+    </main>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup>
+import { ref, onMounted } from "vue";
+import Navbar from "./components/Navbar.vue";
+import ProjectList from "./components/ProjectList.vue";
+import ProjectForm from "./components/ProjectForm.vue";
+
+const view = ref("list");
+const projects = ref([]);
+const editedProject = ref(null);
+
+onMounted(() => {
+  const savedProjects = localStorage.getItem("projects");
+  projects.value = savedProjects ? JSON.parse(savedProjects) : [];
+});
+
+const saveToStorage = () => {
+  localStorage.setItem("projects", JSON.stringify(projects.value));
+};
+
+const saveProject = (project) => {
+  if (editedProject.value) {
+    const index = projects.value.findIndex((p) => p.id === project.id);
+    if (index !== -1) {
+      projects.value[index] = project;
+    }
+    alert("Projekt sikeresen módosítva!");
+  } else {
+    project.id = Date.now();
+    projects.value.push(project);
+    alert("Projekt sikeresen hozzáadva!");
+  }
+  saveToStorage();
+  editedProject.value = null;
+  view.value = "list";
+};
+
+const startEdit = (project) => {
+  editedProject.value = { ...project };
+  view.value = "form";
+};
+
+const cancelEdit = () => {
+  editedProject.value = null;
+  view.value = "list";
+};
+
+const deleteProject = (id) => {
+  projects.value = projects.value.filter((p) => p.id !== id);
+  saveToStorage();
+  alert("Projekt sikeresen törölve!");
+};
+</script>
