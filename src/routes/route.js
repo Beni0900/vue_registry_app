@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import ProjectsList from "../components/ProjectList.vue";
-import ProjectFields from "../components/ProjectFields.vue";
+import ProjectsList from "../views/ProjectList.vue";
+import ProjectFields from "../views/ProjectFields.vue";
 
 const routes = [
   { path: "/projects", component: ProjectsList },
