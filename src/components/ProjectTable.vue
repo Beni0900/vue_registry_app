@@ -55,7 +55,6 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
 import { formatDate, formatCurrency } from "../utils";
 
 const props = defineProps({

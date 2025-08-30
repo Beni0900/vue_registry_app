@@ -7,14 +7,14 @@ Tartalmaz projekt hozzáadást, szerkesztést, törlést, validációt és szűr
 
 ## Projekt struktúra
 
-src/
-├─ assets/ # Stílusok, képek, statikus fájlok
-├─ components/ # Újrafelhasználható Vue komponensek (pl. TextInput.vue, ProjectTable.vue)
-├─ composables/ # Újrafelhasználható logikai egységek (pl. useProject.js, useValidation.js, useFilters.js)
-├─ model/ # Model osztályok (pl. Project.js)
-├─ utils/ # Segédfüggvények (pl. dátum és valuta formázás)
-├─ views/ # Oldalakat megjelenítő komponensek
-├─ App.vue # Fő komponens
+src/  
+├─ assets/ # Stílusok, képek, statikus fájlok  
+├─ components/ # Újrafelhasználható Vue komponensek (pl. TextInput.vue, ProjectTable.vue)  
+├─ composables/ # Újrafelhasználható logikai egységek (pl. useProject.js, useValidation.js, useFilters.js)  
+├─ model/ # Model osztályok (pl. Project.js)  
+├─ utils/ # Segédfüggvények (pl. dátum és valuta formázás)  
+├─ views/ # Oldalakat megjelenítő komponensek  
+├─ App.vue # Fő komponens  
 └─ main.js # Alkalmazás belépési pontja
 
 ---
@@ -56,13 +56,5 @@ Build szerver indítása (pl. statikus szerver):
 - Pinia (állapotkezelés)
 - Vite (fejlesztői környezet)
 - TailwindCSS és egyéni CSS
-
----
-
-## További fejlesztési irányok
-
-- Több mező validáció és dinamikus hibakezelés
-- Többféle szűrés, rendezés
-- API integráció backenddel
 
 ---
